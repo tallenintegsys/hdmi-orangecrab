@@ -61,8 +61,7 @@ module hdmi
     // external signal.
     parameter int START_X = 0,
     parameter int START_Y = 0
-)
-(
+) (
     input logic clk_pixel_x5,
     input logic clk_pixel,
     input logic clk_audio,
@@ -305,15 +304,25 @@ generate
         assign video_field_end = cx == screen_width - 1'b1 && cy == screen_height - 1'b1;
         logic [4:0] packet_pixel_counter;
         packet_picker #(
-            .VIDEO_ID_CODE(VIDEO_ID_CODE),
-            .VIDEO_RATE(VIDEO_RATE),
-            .IT_CONTENT(IT_CONTENT),
-            .AUDIO_RATE(AUDIO_RATE),
-            .AUDIO_BIT_WIDTH(AUDIO_BIT_WIDTH),
-            .VENDOR_NAME(VENDOR_NAME),
-            .PRODUCT_DESCRIPTION(PRODUCT_DESCRIPTION),
-            .SOURCE_DEVICE_INFORMATION(SOURCE_DEVICE_INFORMATION)
-        ) packet_picker (.clk_pixel(clk_pixel), .clk_audio(clk_audio), .reset(reset), .video_field_end(video_field_end), .packet_enable(packet_enable), .packet_pixel_counter(packet_pixel_counter), .audio_sample_word(audio_sample_word), .header(header), .sub(sub));
+          .VIDEO_ID_CODE(VIDEO_ID_CODE),
+          .VIDEO_RATE(VIDEO_RATE),
+          .IT_CONTENT(IT_CONTENT),
+          .AUDIO_RATE(AUDIO_RATE),
+          .AUDIO_BIT_WIDTH(AUDIO_BIT_WIDTH),
+          .VENDOR_NAME(VENDOR_NAME),
+          .PRODUCT_DESCRIPTION(PRODUCT_DESCRIPTION),
+          .SOURCE_DEVICE_INFORMATION(SOURCE_DEVICE_INFORMATION)
+        ) packet_picker (
+		  .clk_pixel(clk_pixel),
+		  .clk_audio(clk_audio),
+		  .reset(reset),
+		  .video_field_end(video_field_end),
+		  .packet_enable(packet_enable),
+		  .packet_pixel_counter(packet_pixel_counter),
+		  .audio_sample_word(audio_sample_word),
+		  .header(header),
+		  .sub(sub)
+		);
         logic [8:0] packet_data;
         packet_assembler packet_assembler (.clk_pixel(clk_pixel), .reset(reset), .data_island_period(data_island_period), .header(header), .sub(sub), .packet_data(packet_data), .counter(packet_pixel_counter));
 
@@ -366,10 +375,29 @@ generate
     // TMDS code production.
     for (i = 0; i < NUM_CHANNELS; i++)
     begin: tmds_gen
-        tmds_channel #(.CN(i)) tmds_channel (.clk_pixel(clk_pixel), .video_data(video_data[i*8+7:i*8]), .data_island_data(data_island_data[i*4+3:i*4]), .control_data(control_data[i*2+1:i*2]), .mode(mode), .tmds(tmds_internal[i]));
+        tmds_channel #(
+		  .CN(i)
+		) tmds_channel (
+		  .clk_pixel(clk_pixel),
+		  .video_data(video_data[i*8+7:i*8]),
+		  .data_island_data(data_island_data[i*4+3:i*4]),
+		  .control_data(control_data[i*2+1:i*2]),
+		  .mode(mode),
+		  .tmds(tmds_internal[i])
+		);
     end
 endgenerate
 
-serializer #(.NUM_CHANNELS(NUM_CHANNELS), .VIDEO_RATE(VIDEO_RATE)) serializer(.clk_pixel(clk_pixel), .clk_pixel_x5(clk_pixel_x5), .reset(reset), .tmds_internal(tmds_internal), .tmds(tmds), .tmds_clock(tmds_clock));
+serializer #(
+  .NUM_CHANNELS(NUM_CHANNELS),
+  .VIDEO_RATE(VIDEO_RATE)
+) serializer(
+  .clk_pixel(clk_pixel),
+  .clk_pixel_x5(clk_pixel_x5),
+  .reset(reset),
+  .tmds_internal(tmds_internal),
+  .tmds(tmds),
+  .tmds_clock(tmds_clock)
+);
 
 endmodule

@@ -11,11 +11,15 @@ module serializer
     output logic [2:0] tmds,
     output logic tmds_clock
 );
+$info("serdes built for ...");
 
 `ifndef VERILATOR
+	$info("serdes VERILATOR not defined...");
     `ifndef SYNTHESIS // XXX hackjob! work out these ifdefs with Vivado, Quartus, and yosys
+		$info("serdes SYNTHESIS not defined...");
         `ifndef ALTERA_RESERVED_QIS
             // https://www.xilinx.com/support/documentation/user_guides/ug471_7Series_SelectIO.pdf
+			$info("serdes built for Xilinx(Vivado)");
             logic tmds_plus_clock [NUM_CHANNELS:0];
             assign tmds_plus_clock = '{tmds_clock, tmds[2], tmds[1], tmds[0]};
             logic [9:0] tmds_internal_plus_clock [NUM_CHANNELS:0];
@@ -110,6 +114,7 @@ module serializer
             endgenerate
         `endif
     `elsif GW_IDE
+		$info("serdes built for GlowWin");
         OSER10 gwSer0( 
             .Q( tmds[ 0 ] ),
             .D0( tmds_internal[ 0 ][ 0 ] ),
@@ -161,6 +166,7 @@ module serializer
         assign tmds_clock = clk_pixel;
   
     `else
+		$info("serdes GW_IDE not defined...");
         logic [9:0] tmds_reversed [NUM_CHANNELS-1:0];
         genvar i, j;
         generate
@@ -173,6 +179,7 @@ module serializer
             end
         endgenerate
         `ifdef MODEL_TECH
+			$info("serdes, MODEL_TECH");
             logic [3:0] position = 4'd0;
             always_ff @(posedge clk_pixel_x5)
             begin
@@ -186,8 +193,10 @@ module serializer
                 tmds_clock <= position >= 4'd5;
                 position <= position == 4'd9 ? 4'd0 : position + 1'd1;
             end
-        `else
+        `else // MODEL_TECH
+			$info("serdes, not MODEL_TECH");
             `ifdef ALTERA_RESERVED_QIS
+				$info("serdes built for Altera(Quartus)");
                 altlvds_tx	ALTLVDS_TX_component (
                     .tx_in ({10'b1111100000, tmds_reversed[2], tmds_reversed[1], tmds_reversed[0]}),
                     .tx_inclock (clk_pixel_x5),
@@ -235,10 +244,11 @@ module serializer
                     ALTLVDS_TX_component.use_no_phase_shift = "ON",
                     ALTLVDS_TX_component.vod_setting = 0,
                     ALTLVDS_TX_component.clk_src_is_pll = "off";
-                `else
+            `else // IP-less (e.g. not Xilinx or Altera or Chinesium)
                     // We don't know what the platform is so the best bet is an IP-less implementation.
                     // Shift registers are loaded with a set of values from tmds_channels every clk_pixel.
                     // They are shifted out on clk_pixel_x5 by the time the next set is loaded.
+					$info("serdes IP-less implementation");
                     logic [9:0] tmds_shift [NUM_CHANNELS-1:0] = '{10'd0, 10'd0, 10'd0};
 
                     logic tmds_control = 1'd0;
@@ -261,27 +271,33 @@ module serializer
                     end
 
                     // See Section 5.4.1
-                    for (i = 0; i < NUM_CHANNELS; i++)
-                    begin: tmds_shifting
-                        always_ff @(posedge clk_pixel_x5)
-                            tmds_shift[i] <= load ? tmds_mux[i] : tmds_shift[i] >> 2;
-                    end
+					genvar i;
+					generate
+                    	for (i = 0; i < NUM_CHANNELS; i++)
+                    	begin: tmds_shifting
+                    	    always_ff @(posedge clk_pixel_x5)
+                    	        tmds_shift[i] <= load ? tmds_mux[i] : tmds_shift[i] >> 2;
+                    	end
+					endgenerate
 
                     logic [9:0] tmds_shift_clk_pixel = 10'b0000011111;
                     always_ff @(posedge clk_pixel_x5)
                         tmds_shift_clk_pixel <= load ? 10'b0000011111 : {tmds_shift_clk_pixel[1:0], tmds_shift_clk_pixel[9:2]};
 
                     logic [NUM_CHANNELS-1:0] tmds_shift_negedge_temp;
-                    for (i = 0; i < NUM_CHANNELS; i++)
-                    begin: tmds_driving
-                        always_ff @(posedge clk_pixel_x5)
-                        begin
-                            tmds[i] <= tmds_shift[i][0];
-                            tmds_shift_negedge_temp[i] <= tmds_shift[i][1];
-                        end
-                        always_ff @(negedge clk_pixel_x5)
-                            tmds[i] <= tmds_shift_negedge_temp[i];
-                    end
+					genvar i;
+					generate
+                    	for (i = 0; i < NUM_CHANNELS; i++)
+                    	begin: tmds_driving
+                    	    always_ff @(posedge clk_pixel_x5)
+                    	    begin
+                    	        tmds[i] <= tmds_shift[i][0];
+                    	        tmds_shift_negedge_temp[i] <= tmds_shift[i][1];
+                    	    end
+                    	    always_ff @(negedge clk_pixel_x5)
+                    	        tmds[i] <= tmds_shift_negedge_temp[i];
+                    	end
+					endgenerate
                     logic tmds_clock_negedge_temp;
                     always_ff @(posedge clk_pixel_x5)
                     begin
@@ -289,9 +305,10 @@ module serializer
                         tmds_clock_negedge_temp <= tmds_shift_clk_pixel[1];
                     end
                     always_ff @(negedge clk_pixel_x5)
+					begin
                         tmds_clock <= tmds_shift_negedge_temp;
-
-                `endif
+					end
+                `endif // ALTERA_RESERVED_QIS
         `endif
     `endif
 `endif

@@ -8,15 +8,17 @@ module top (
 	output 		rgb_led0_r,	// [0:0]LED,
 	output 		rgb_led0_g,	// [0:0]LED,
 	output 		rgb_led0_b,	// [0:0]LED,
-    output		gpio_0,		// HDMO 0p
+    output		gpio_0,		// HDMI 0p
 	output		gpio_1,		// HDMI 0n
-	output 		gpio_5,		// HDMO 1p
-	output 		gpio_6,		// HDMO 1n
+	output 		gpio_5,		// HDMI 1p
+	output 		gpio_6,		// HDMI 1n
 	output		gpio_9,		// HDMI 2p
-    output		gpio_10,	// HDMO 2n
-	output 		gpio_11,	// HDMO cp
-	output 		gpio_12		// HDMO cn
-);
+    output		gpio_10,	// HDMI 2n
+	output 		gpio_11,	// HDMI cp
+	output 		gpio_12,	// HDMI cn
+	output		gpio_a0,
+	output		gpio_a1,
+	output		gpio_a2);
 
 	assign rgb_led0_r = 0;
 	assign rgb_led0_g = 0;
@@ -33,6 +35,10 @@ module top (
 	assign gpio_10 = ~HDMI_OUT[2];
 	assign gpio_11 = HDMI_CLK;
 	assign gpio_12 = ~HDMI_CLK;
+
+	assign gpio_a0 = c0;
+	assign gpio_a1 = c1;
+	assign gpio_a2 = c2;
 
     wire clk_pixel_x5;
     wire clk_pixel;
@@ -51,18 +57,21 @@ module top (
 
     logic [23:0] rgb;// = 24'd523700000000;
     logic [9:0] cx, cy;
-    hdmi #( .VIDEO_ID_CODE(4),
-            .AUDIO_RATE(AUDIO_RATE),
-            .AUDIO_BIT_WIDTH(AUDIO_BIT_WIDTH))
-        hdmi(.clk_pixel_x5(clk_pixel_x5),
-             .clk_pixel(clk_pixel),
-             .clk_audio(clk_audio),
-             .rgb(rgb),
-             .audio_sample_word('{audio_sample_word_dampened, audio_sample_word_dampened}),
-             .tmds(HDMI_OUT),
-             .tmds_clock(HDMI_CLK),
-             .cx(cx),
-             .cy(cy));
+    hdmi #(
+	  .VIDEO_ID_CODE(4),
+      .AUDIO_RATE(AUDIO_RATE),
+      .AUDIO_BIT_WIDTH(AUDIO_BIT_WIDTH))
+    hdmi(
+	  .clk_pixel_x5(clk_pixel_x5),
+	  .clk_pixel(clk_pixel),
+	  .clk_audio(clk_audio),
+	  .rgb(rgb),
+	  .audio_sample_word('{audio_sample_word_dampened, audio_sample_word_dampened}),
+	  .tmds(HDMI_OUT),
+	  .tmds_clock(HDMI_CLK),
+	  .cx(cx),
+	  .cy(cy)
+	);
 
     logic [7:0] character = 8'h30;
     logic [5:0] prevcy = 6'd0;
