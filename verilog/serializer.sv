@@ -13,7 +13,7 @@ module serializer
 );
 
 `ifndef VERILATOR
-    `ifndef SYNTHESIS
+    `ifndef SYNTHESIS // XXX hackjob! work out these ifdefs with Vivado, Quartus, and yosys
         `ifndef ALTERA_RESERVED_QIS
             // https://www.xilinx.com/support/documentation/user_guides/ug471_7Series_SelectIO.pdf
             logic tmds_plus_clock [NUM_CHANNELS:0];
