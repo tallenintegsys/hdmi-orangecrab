@@ -9,7 +9,7 @@ all: ${PROJ}.json
 dfu: ${PROJ}.dfu
 	dfu-util -a0 -D $<
 
-%.json: verilog/*.sv
+%.json: $(SRCS)
 	$(YOSYS) -p "plugin -i systemverilog" -p "read_systemverilog $(SRCS); synth_ecp5 -json $@"
 
 %_out.config: %.json
