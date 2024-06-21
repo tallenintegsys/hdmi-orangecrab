@@ -18,7 +18,9 @@ module top (
 	output 		gpio_12,	// HDMI cn
 	output		gpio_a0,
 	output		gpio_a1,
-	output		gpio_a2);
+	output		gpio_a2,
+	output		gpio_a3
+);
 
 	assign rgb_led0_r = 0;
 	assign rgb_led0_g = 0;
@@ -36,14 +38,15 @@ module top (
 	assign gpio_11 = HDMI_CLK;
 	assign gpio_12 = ~HDMI_CLK;
 
-	assign gpio_a0 = c0;
-	assign gpio_a1 = c1;
-	assign gpio_a2 = c2;
+	assign gpio_a0 = clk48;
+	assign gpio_a1 = clk_pixel;
+	assign gpio_a2 = clk_pixel_x5;
+	assign gpio_a3 = clk_audio;
 
     wire clk_pixel_x5;
     wire clk_pixel;
     wire clk_audio;
-    hdmi_pll hdmi_pll(.inclk0(CLOCK_50), .c0(clk_pixel), .c1(clk_pixel_x5), .c2(clk_audio));
+    hdmi_pll hdmi_pll(.inclk0(clk48), .c0(clk_pixel), .c1(clk_pixel_x5), .c2(clk_audio));
 
     localparam AUDIO_BIT_WIDTH = 16;
     localparam AUDIO_RATE = 48000;
@@ -87,7 +90,7 @@ module top (
 
 	// RNG
     LFSR #(.NUM_BITS(24)) LSFR (
-       .i_Clk(CLOCK_50),
+       .i_Clk(clk48),
        .i_Enable(1),
        .o_LFSR_Data(rgb)
     );
