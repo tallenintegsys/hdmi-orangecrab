@@ -2,3 +2,4 @@ slpp_all/
 hdmi-orangecrab.json 
 *.swp
 *.config
+*.dfu
