@@ -1,74 +1,60 @@
-`timescale 1 ps / 1 ps
-
-// FPGA-TN-02200-1-3-ECP5-and-ECP5-5G-sysCLOCK-PLL-DLL-Design-and-User-Guide%20(2).pdf
-
-module hdmi_pll (
-  input inclk0,
-  output c0,
-  output c1,
-  output c2
+// diamond 3.7 accepts this PLL
+// diamond 3.8-3.9 is untested
+// diamond 3.10 or higher is likely to abort with error about unable to use feedback signal
+// cause of this could be from wrong CPHASE/FPHASE parameters
+module hdmi_pll
+(
+    input inclk0, // 48 MHz, 0 deg
+    output c0, // 25.6 MHz, 0 deg
+    output c1, // 147.2 MHz, 0 deg
+    output c2, // 0.0480026 MHz, 0 deg
+    output locked
 );
-
-	EHXPLLL #(
-      .CLKI_DIV(1),
-      .CLKFB_DIV(1),
-      .CLKOP_DIV(8),
-      .CLKOS_DIV(8),
-      .CLKOS2_DIV(8),
-      .CLKOS3_DIV(8),
-      .CLKOP_ENABLE("ENABLED"),
-      .CLKOS_ENABLE("DISABLED"),
-      .CLKOS2_ENABLE("ENABLED"),
-      .CLKOS3_ENABLE("ENABLED"),
-      .CLKOP_CPHASE(0),
-      .CLKOS_CPHASE(0),
-      .CLKOS2_CPHASE(0),
-      .CLKOS3_CPHASE(0),
-      .CLKOP_FPHASE(0),
-      .CLKOS_FPHASE(0),
-      .CLKOS2_FPHASE(0),
-      .CLKOS3_FPHASE(0),
-      .FEEDBK_PATH("CLKOP"),
-      .CLKOP_TRIM_POL("RISING"),
-      .CLKOP_TRIM_DELAY(0),
-      .CLKOS_TRIM_POL("RISING"),
-      .CLKOS_TRIM_DELAY(0),
-      .OUTDIVIDER_MUXA("DIVA"),
-      .OUTDIVIDER_MUXB("DIVB"),
-      .OUTDIVIDER_MUXC("DIVC"),
-      .OUTDIVIDER_MUXD("DIVD"),
-      .PLL_LOCK_MODE(0),				// 0 = unsticky?
-      .PLL_LOCK_DELAY(200),
-      .STDBY_ENABLE("DISABLED"),		// enable the STDBY port below
-      .REFIN_RESET("DISABLED"),
-      .SYNC_ENABLE("DISABLED"),
-      .INT_LOCK_STICKY("ENABLED"),
-      .DPHASE_SOURCE("DISABLED"),
-      .PLLRST_ENA("DISABLED"),
-      .INTFB_WAKE("DISABLED")
-	) pll (
-      .CLKI(inclk),	 					// I Input Clock to PLL
-   	  .CLKFB(), 					    // I Feedback Clock
-      .PHASESEL1(),					 	// I Select the output affected by Dynamic Phase adjustment.
-	  .PHASESEL0(),						// I Select the output affected by Dynamic Phase adjustment.
-	  .PHASEDIR(), 					    // I Dynamic Phase adjustment direction. 0=Delayed (lagging), 1=Advanced (leading)
-	  .PHASESTEP(),						// I Dynamic Phase adjustment step.
-	  .PHASELOADREG(				),  // I Load dynamic phase adjustment values into PLL.
-      .STDBY(0),						// I Standby signal to power down the PLL.
-	  .PLLWAKESYNC()				,	// I Enable PLL switching from internal feedback to user feedback path when PLL wake up.
-      .RST(0),							// I Resets the whole PLL.
-      .ENCLKOP(1),						// I Enable PLL output CLKOP
-      .ENCLKOS(1),						// I Enable PLL output CLKOS
-	  .ENCLKOS2(1),						// I Enable PLL output CLKOS2
-	  .ENCLKOS3(1),						// I Enable PLL output CLKOS3
-      .CLKOP(c0), 						// O PLL main output clock.
-      .CLKOS(),							// O PLL output clock.
-	  .CLKOS2(c1),  				    // O PLL output clock.
-	  .CLKOS3(c2),  				    // O PLL output clock.
-      .LOCK(),      				    // O PLL LOCK to CLKI, Asynchronous signal. Active high indicates PLL lock.
-	  .INTLOCK(),						// O Internal Lock Signal.
-      .REFCLK(),						// O Output of Reference clock mux.
-	  .CLKINTFB()						// O Internal Feedback Clock.
+(* FREQUENCY_PIN_CLKI="48" *)
+(* FREQUENCY_PIN_CLKOP="25.6" *)
+(* FREQUENCY_PIN_CLKOS="147.2" *)
+(* FREQUENCY_PIN_CLKOS2="0.0480026" *)
+(* ICP_CURRENT="12" *) (* LPF_RESISTOR="8" *) (* MFG_ENABLE_FILTEROPAMP="1" *) (* MFG_GMCREF_SEL="2" *)
+EHXPLLL #(
+        .PLLRST_ENA("DISABLED"),
+        .INTFB_WAKE("DISABLED"),
+        .STDBY_ENABLE("DISABLED"),
+        .DPHASE_SOURCE("DISABLED"),
+        .OUTDIVIDER_MUXA("DIVA"),
+        .OUTDIVIDER_MUXB("DIVB"),
+        .OUTDIVIDER_MUXC("DIVC"),
+        .OUTDIVIDER_MUXD("DIVD"),
+        .CLKI_DIV(15),
+        .CLKOP_ENABLE("ENABLED"),
+        .CLKOP_DIV(23),
+        .CLKOP_CPHASE(11),
+        .CLKOP_FPHASE(0),
+        .CLKOS_ENABLE("ENABLED"),
+        .CLKOS_DIV(4),
+        .CLKOS_CPHASE(11),
+        .CLKOS_FPHASE(0),
+        .CLKOS2_ENABLE("ENABLED"),
+        .CLKOS2_DIV(12266),
+        .CLKOS2_CPHASE(11),
+        .CLKOS2_FPHASE(0),
+        .FEEDBK_PATH("CLKOP"),
+        .CLKFB_DIV(8)
+    ) pll_i (
+        .RST(1'b0),
+        .STDBY(1'b0),
+        .CLKI(inclk0),
+        .CLKOP(c0),
+        .CLKOS(c1),
+        .CLKOS2(c2),
+        .CLKFB(c0),
+        .CLKINTFB(),
+        .PHASESEL0(1'b0),
+        .PHASESEL1(1'b0),
+        .PHASEDIR(1'b1),
+        .PHASESTEP(1'b1),
+        .PHASELOADREG(1'b1),
+        .PLLWAKESYNC(1'b0),
+        .ENCLKOP(1'b0),
+        .LOCK(locked)
 	);
-
 endmodule
