@@ -2,6 +2,7 @@
 LOCATE COMP     "gpio_5"        SITE "B10";
 IOBUF PORT      "gpio_5"        IO_TYPE=LVCMOS33;
 IOBUF PORT      "gpio_5"        PULLMODE=DOWN;
+IOBUF PORT      "gpio_5"        SLEWRATE=FAST;
 
 // PIO1
 LOCATE COMP     "clk48"         SITE "A9";					// 48MHz clock
@@ -10,6 +11,7 @@ FREQUENCY PORT  "clk48"         48.0 MHz;
 LOCATE COMP     "gpio_6"        SITE "B9";
 IOBUF PORT      "gpio_6"        IO_TYPE=LVCMOS33;
 IOBUF PORT      "gpio_6"        PULLMODE=DOWN;
+IOBUF PORT      "gpio_6"        SLEWRATE=FAST;
 LOCATE COMP     "gpio_11"       SITE "A8";
 IOBUF PORT      "gpio_11"       IO_TYPE=LVCMOS33;
 //IOBUF PORT      "gpio_11"       PULLMODE=DOWN;
@@ -17,71 +19,73 @@ IOBUF PORT      "gpio_11"       SLEWRATE=FAST;
 LOCATE COMP     "gpio_9"        SITE "C8";
 IOBUF PORT      "gpio_9"        IO_TYPE=LVCMOS33;
 IOBUF PORT      "gpio_9"        PULLMODE=DOWN;
+IOBUF PORT      "gpio_9"        SLEWRATE=FAST;
 LOCATE COMP     "gpio_10"       SITE "B8";
 IOBUF PORT      "gpio_10"       IO_TYPE=LVCMOS33;
 IOBUF PORT      "gpio_10"       PULLMODE=DOWN;
+IOBUF PORT      "gpio_10"       SLEWRATE=FAST;
 
 // PIO2
 LOCATE COMP     "ddram_a[0]"     SITE "C4";
 IOBUF PORT      "ddram_a[0]"     SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[0]"     IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[0]"     IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[1]"     SITE "D2";
 IOBUF PORT      "ddram_a[1]"     SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[1]"     IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[1]"     IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[2]"     SITE "D3";
 IOBUF PORT      "ddram_a[2]"     SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[2]"     IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[2]"     IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[3]"     SITE "A3";
 IOBUF PORT      "ddram_a[3]"     SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[3]"     IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[3]"     IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[4]"     SITE "A4";
 IOBUF PORT      "ddram_a[4]"     SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[4]"     IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[4]"     IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[5]"     SITE "D4";
 IOBUF PORT      "ddram_a[5]"     SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[5]"     IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[5]"     IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[6]"     SITE "C3";
 IOBUF PORT      "ddram_a[6]"     SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[6]"     IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[6]"     IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[7]"     SITE "B2";
 IOBUF PORT      "ddram_a[7]"     SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[7]"     IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[7]"     IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[8]"     SITE "B1";
 IOBUF PORT      "ddram_a[8]"     SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[8]"     IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[8]"     IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[9]"     SITE "D1";
 IOBUF PORT      "ddram_a[9]"     SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[9]"     IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[9]"     IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[10]"    SITE "A7";
 IOBUF PORT      "ddram_a[10]"    SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[10]"    IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[10]"    IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[11]"    SITE "C2";
 IOBUF PORT      "ddram_a[11]"    SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[11]"    IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[11]"    IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[12]"    SITE "B6";
 IOBUF PORT      "ddram_a[12]"    SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[12]"    IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[12]"    IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[13]"    SITE "C1";
 IOBUF PORT      "ddram_a[13]"    SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[13]"    IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[13]"    IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[14]"    SITE "A2";
 IOBUF PORT      "ddram_a[14]"    SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[14]"    IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[14]"    IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_a[15]"    SITE "C7";
 IOBUF PORT      "ddram_a[15]"    SLEWRATE=FAST;
-IOBUF PORT      "ddram_a[15]"    IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_a[15]"    IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_ba[0]"    SITE "D6";
 IOBUF PORT      "ddram_ba[0]"    SLEWRATE=FAST;
-IOBUF PORT      "ddram_ba[0]"    IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_ba[0]"    IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_vccio[5]" SITE "C6";
 IOBUF PORT      "ddram_vccio[5]" SLEWRATE=FAST;
-IOBUF PORT      "ddram_vccio[5]" IO_TYPE=SSTL135_II;
+IOBUF PORT      "ddram_vccio[5]" IO_TYPE=LVCMOS33I;
 LOCATE COMP     "ddram_ba[1]"    SITE "B7";
 IOBUF PORT      "ddram_ba[1]"    SLEWRATE=FAST;
-IOBUF PORT      "ddram_ba[1]"    IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_ba[1]"    IO_TYPE=LVCMOS33;
 LOCATE COMP     "ddram_ba[2]"    SITE "A6";
 IOBUF PORT      "ddram_ba[2]"    SLEWRATE=FAST;
-IOBUF PORT      "ddram_ba[2]"    IO_TYPE=SSTL135_I;
+IOBUF PORT      "ddram_ba[2]"    IO_TYPE=LVCMOS33;
 
 // PIO3 3V3
 LOCATE COMP     "gpio_a3"       SITE "H4";			// 3
@@ -115,7 +119,7 @@ LOCATE COMP     "ADC_CTRL0"     SITE "G1";			// 3
 IOBUF PORT      "ADC_CTRL0"     IO_TYPE=LVCMOS33;
 IOBUF PORT      "ADC_CTRL0"     PULLMODE=DOWN;
 LOCATE COMP     "gpio_13"       SITE "J2";				// 3
-IOBUF PORT      "gpio_13"       IO_TYPE=LVCMOS33D;
+IOBUF PORT      "gpio_13"       IO_TYPE=LVCMOS33;
 IOBUF PORT      "gpio_13"       PULLMODE=DOWN;
 IOBUF PORT      "gpio_13"       SLEWRATE=FAST;
 LOCATE COMP     "SD0_DAT0"      SITE "J1";				// 3
@@ -318,9 +322,11 @@ IOBUF PORT      "ddram_dq[0]" TERMINATION=OFF;
 // N16 IO_MOSI
 LOCATE COMP     "gpio_0"	SITE "N17";				//8
 IOBUF PORT      "gpio_0"	IO_TYPE=LVCMOS33;
+IOBUF PORT      "gpio_0"    PULLMODE=DOWN;
 IOBUF PORT      "gpio_0"	SLEWRATE=FAST;
 LOCATE COMP     "gpio_1"	SITE "M18";				//8
 IOBUF PORT      "gpio_1"	IO_TYPE=LVCMOS33;
+IOBUF PORT      "gpio_1"    PULLMODE=DOWN;
 IOBUF PORT      "gpio_1"	SLEWRATE=FAST;
 LOCATE COMP     "spiflash4x_dq[3]" SITE "N18";		// 8
 IOBUF PORT      "spiflash4x_dq[3]" IO_TYPE=LVCMOS33;
