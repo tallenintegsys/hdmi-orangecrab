@@ -5,9 +5,9 @@ module top (
     input       clk48,
     input       usr_btn,    // SW0,
     output      rst_n,
-    output      rgb_led0_r,
-    output      rgb_led0_g,
-    output      rgb_led0_b,
+    output reg  rgb_led0_r,
+    output reg  rgb_led0_g,
+    output reg  rgb_led0_b,
     output      gpio_0,        // HDMI 0p
     output      gpio_1,        // HDMI 0n
     output      gpio_5,        // HDMI 1p
@@ -22,12 +22,9 @@ module top (
     output      gpio_a3     // clk_audio
 );
 
-	reg    rgb_led0_r;
-	reg    rgb_led0_g;
-	reg    rgb_led0_b;
     assign rgb_led0_r = ~locked;
-    assign rgb_led0_g = 1;
-    assign rgb_led0_b = 1;
+    //assign rgb_led0_g = 1;
+    //assign rgb_led0_b = 1;
 
     wire [2:0]  HDMI_OUT;
     wire        HDMI_CLK;
@@ -108,7 +105,23 @@ module top (
     );
 
     //console console(.clk_pixel(clk_pixel), .codepoint(character), .attribute({cx[9], cy[8:6], cx[8:5]}), .cx(cx), .cy(cy), .rgb(rgb));
+reg [31:0] counter = 0;
+always @(posedge clk_pixel_x5) begin
+	counter <= counter + 32'd1;
+	if ( counter == 32'd125000000 ) begin
+		counter <= 32'd0;
+		rgb_led0_b <= ~rgb_led0_b;
+	end
+end
 
+reg [31:0] c = 0;
+always @(posedge clk48) begin
+	c <= c + 32'd1;
+	if ( c == 32'd48000000 ) begin
+		c <= 32'd0;
+		rgb_led0_g <= ~rgb_led0_g;
+	end
+end
 
 // Reset logic on button press.
 // this will enter the bootloader
