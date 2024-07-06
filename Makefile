@@ -6,6 +6,8 @@ SRCS = $(wildcard verilog/*.sv) $(wildcard verilog/*.v)
 
 all: ${PROJ}.json
 
+bit: $(PROJ).bit
+
 dfu: ${PROJ}.dfu
 	dfu-util -a0 -D $<
 
