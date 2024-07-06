@@ -5,15 +5,15 @@
 module hdmi_pll
 (
     input inclk0, // 48 MHz, 0 deg
-    output c0, // 25.6 MHz, 0 deg
-    output c1, // 147.2 MHz, 0 deg
-    output c2, // 0.0480026 MHz, 0 deg
+    output c1, // 126 MHz, 0 deg
+    output c0, // 25.2 MHz, 0 deg
+    output c2, // 0.048 MHz, 0 deg
     output locked
 );
 (* FREQUENCY_PIN_CLKI="48" *)
-(* FREQUENCY_PIN_CLKOP="25.6" *)
-(* FREQUENCY_PIN_CLKOS="147.2" *)
-(* FREQUENCY_PIN_CLKOS2="0.0480026" *)
+(* FREQUENCY_PIN_CLKOP="126" *)
+(* FREQUENCY_PIN_CLKOS="25.2" *)
+(* FREQUENCY_PIN_CLKOS2="0.048" *)
 (* ICP_CURRENT="12" *) (* LPF_RESISTOR="8" *) (* MFG_ENABLE_FILTEROPAMP="1" *) (* MFG_GMCREF_SEL="2" *)
 EHXPLLL #(
         .PLLRST_ENA("DISABLED"),
@@ -24,29 +24,29 @@ EHXPLLL #(
         .OUTDIVIDER_MUXB("DIVB"),
         .OUTDIVIDER_MUXC("DIVC"),
         .OUTDIVIDER_MUXD("DIVD"),
-        .CLKI_DIV(15),
+        .CLKI_DIV(8),
         .CLKOP_ENABLE("ENABLED"),
-        .CLKOP_DIV(23),
-        .CLKOP_CPHASE(11),
+        .CLKOP_DIV(5),
+        .CLKOP_CPHASE(2),
         .CLKOP_FPHASE(0),
         .CLKOS_ENABLE("ENABLED"),
-        .CLKOS_DIV(4),
-        .CLKOS_CPHASE(11),
+        .CLKOS_DIV(25),
+        .CLKOS_CPHASE(2),
         .CLKOS_FPHASE(0),
         .CLKOS2_ENABLE("ENABLED"),
-        .CLKOS2_DIV(12266),
-        .CLKOS2_CPHASE(11),
+        .CLKOS2_DIV(13125),
+        .CLKOS2_CPHASE(2),
         .CLKOS2_FPHASE(0),
         .FEEDBK_PATH("CLKOP"),
-        .CLKFB_DIV(8)
+        .CLKFB_DIV(21)
     ) pll_i (
         .RST(1'b0),
         .STDBY(1'b0),
         .CLKI(inclk0),
-        .CLKOP(c0),
-        .CLKOS(c1),
+        .CLKOP(c1),
+        .CLKOS(c0),
         .CLKOS2(c2),
-        .CLKFB(c0),
+        .CLKFB(c1),
         .CLKINTFB(),
         .PHASESEL0(1'b0),
         .PHASESEL1(1'b0),

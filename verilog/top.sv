@@ -2,51 +2,62 @@
 `timescale 1ns / 1ps
 
 module top (
-	input		clk48,
-	input		usr_btn,	// SW0,
-	output		rst_n,
-	output 		rgb_led0_r,	// [0:0]LED,
-	output 		rgb_led0_g,	// [0:0]LED,
-	output 		rgb_led0_b,	// [0:0]LED,
-    output		gpio_0,		// HDMI 0p
-	output		gpio_1,		// HDMI 0n
-	output 		gpio_5,		// HDMI 1p
-	output 		gpio_6,		// HDMI 1n
-	output		gpio_9,		// HDMI 2p
-    output		gpio_10,	// HDMI 2n
-	output 		gpio_11,	// HDMI cp
-	output 		gpio_12,	// HDMI cn
-	output		gpio_a0,
-	output		gpio_a1,
-	output		gpio_a2,
-	output		gpio_a3
+    input       clk48,
+    input       usr_btn,    // SW0,
+    output      rst_n,
+    output      rgb_led0_r,
+    output      rgb_led0_g,
+    output      rgb_led0_b,
+    output      gpio_0,        // HDMI 0p
+    output      gpio_1,        // HDMI 0n
+    output      gpio_5,        // HDMI 1p
+    output      gpio_6,        // HDMI 1n
+    output      gpio_9,        // HDMI 2p
+    output      gpio_10,    // HDMI 2n
+    output      gpio_12,
+    output      gpio_13,    // HDMI cp
+    output      gpio_a0,    // clk48
+    output      gpio_a1,    // clk_pixel
+    output      gpio_a2,    // HDMI cn
+    output      gpio_a3     // clk_audio
 );
 
-	assign rgb_led0_r = 0;
-	assign rgb_led0_g = 0;
-	assign rgb_led0_b = 0;
+	reg    rgb_led0_r;
+	reg    rgb_led0_g;
+	reg    rgb_led0_b;
+    assign rgb_led0_r = ~locked;
+    assign rgb_led0_g = 1;
+    assign rgb_led0_b = 1;
 
-	wire [2:0]  HDMI_OUT;
-	wire		HDMI_CLK;
+    wire [2:0]  HDMI_OUT;
+    wire        HDMI_CLK;
 
-	assign gpio_0  = HDMI_OUT[0];
-	assign gpio_1  = ~HDMI_OUT[0];
-	assign gpio_5  = HDMI_OUT[1];
-	assign gpio_6  = ~HDMI_OUT[1];
-	assign gpio_9  = HDMI_OUT[2];
-	assign gpio_10 = ~HDMI_OUT[2];
-	assign gpio_11 = HDMI_CLK;
-	assign gpio_12 = ~HDMI_CLK;
+    assign gpio_0  = HDMI_OUT[0];
+    assign gpio_1  = ~HDMI_OUT[0];
+    assign gpio_5  = HDMI_OUT[1];
+    assign gpio_6  = ~HDMI_OUT[1];
+    assign gpio_9  = HDMI_OUT[2];
+    assign gpio_10 = ~HDMI_OUT[2];
+    assign gpio_13 = HDMI_CLK;
+    assign gpio_a2 = ~HDMI_CLK;
 
-	assign gpio_a0 = clk48;
-	assign gpio_a1 = clk_pixel;
-	assign gpio_a2 = clk_pixel_x5;
-	assign gpio_a3 = clk_audio;
+    assign gpio_a0 = clk48;
+    assign gpio_a1 = clk_pixel;
+    assign gpio_12 = clk_pixel_x5;
+    assign gpio_a3 = clk_audio;
 
     wire clk_pixel_x5;
     wire clk_pixel;
     wire clk_audio;
-    hdmi_pll hdmi_pll(.inclk0(clk48), .c0(clk_pixel), .c1(clk_pixel_x5), .c2(clk_audio));
+    wire locked;
+
+    hdmi_pll hdmi_pll(
+        .inclk0(clk48),
+        .c0(clk_pixel),
+        .c1(clk_pixel_x5),
+        .c2(clk_audio),
+        .locked(locked)
+    );
 
     localparam AUDIO_BIT_WIDTH = 16;
     localparam AUDIO_RATE = 48000;
@@ -60,21 +71,22 @@ module top (
 
     logic [23:0] rgb;// = 24'd523700000000;
     logic [9:0] cx, cy;
+
     hdmi #(
-	  .VIDEO_ID_CODE(4),
+      .VIDEO_ID_CODE(4),
       .AUDIO_RATE(AUDIO_RATE),
       .AUDIO_BIT_WIDTH(AUDIO_BIT_WIDTH))
     hdmi(
-	  .clk_pixel_x5(clk_pixel_x5),
-	  .clk_pixel(clk_pixel),
-	  .clk_audio(clk_audio),
-	  .rgb(rgb),
-	  .audio_sample_word('{audio_sample_word_dampened, audio_sample_word_dampened}),
-	  .tmds(HDMI_OUT),
-	  .tmds_clock(HDMI_CLK),
-	  .cx(cx),
-	  .cy(cy)
-	);
+      .clk_pixel_x5(clk_pixel_x5),
+      .clk_pixel(clk_pixel),
+      .clk_audio(clk_audio),
+      .rgb(rgb),
+      .audio_sample_word('{audio_sample_word_dampened, audio_sample_word_dampened}),
+      .tmds(HDMI_OUT),
+      .tmds_clock(HDMI_CLK),
+      .cx(cx),
+      .cy(cy)
+    );
 
     logic [7:0] character = 8'h30;
     logic [5:0] prevcy = 6'd0;
@@ -88,7 +100,7 @@ module top (
         end
     end
 
-	// RNG
+    // RNG
     LFSR #(.NUM_BITS(24)) LSFR (
        .i_Clk(clk48),
        .i_Enable(1),
@@ -102,7 +114,7 @@ module top (
 // this will enter the bootloader
 reg reset_sr = 1'b1;
 always @(posedge clk48) begin
-	reset_sr <= {usr_btn};
+    reset_sr <= {usr_btn};
 end
 assign rst_n = reset_sr;
 endmodule
