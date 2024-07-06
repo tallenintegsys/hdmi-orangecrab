@@ -12,13 +12,12 @@ module top (
     output      gpio_5,        // HDMI 1p
     output      gpio_6,        // HDMI 1n
     output      gpio_9,        // HDMI 2p
-    output      gpio_10,    // HDMI 2n
-    output      gpio_12,
-    output      gpio_13,    // HDMI cp
-    output      gpio_a0,    // clk48
-    output      gpio_a1,    // clk_pixel
-    output      gpio_a2,    // HDMI cn
-    output      gpio_a3     // clk_audio
+    output      gpio_10,       // HDMI 2n
+    output      gpio_13,       // HDMI cn
+    output      gpio_12,       // HDMI cp
+    output      gpio_a0,       // clk48
+    output      gpio_a1,       // clk_pixel
+    output      gpio_a3        // clk_audio
 );
 
     assign rgb_led0_r = ~locked;
@@ -34,12 +33,11 @@ module top (
     assign gpio_6  = ~HDMI_OUT[1];
     assign gpio_9  = HDMI_OUT[2];
     assign gpio_10 = ~HDMI_OUT[2];
-    assign gpio_13 = HDMI_CLK;
-    assign gpio_a2 = ~HDMI_CLK;
+    assign gpio_12 = HDMI_CLK;
+    assign gpio_13 = ~HDMI_CLK;
 
     assign gpio_a0 = clk48;
     assign gpio_a1 = clk_pixel;
-    assign gpio_12 = clk_pixel_x5;
     assign gpio_a3 = clk_audio;
 
     wire clk_pixel_x5;
