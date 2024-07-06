@@ -40,7 +40,8 @@ module top (
     assign gpio_a1 = clk_pixel;
     assign gpio_a3 = clk_audio;
 
-    wire clk_pixel_x5;
+	wire clk_pixel_x10;
+    reg  clk_pixel_x5;
     wire clk_pixel;
     wire clk_audio;
     wire locked;
@@ -48,10 +49,14 @@ module top (
     hdmi_pll hdmi_pll(
         .inclk0(clk48),
         .c0(clk_pixel),
-        .c1(clk_pixel_x5),
+        .c1(clk_pixel_x10),
         .c2(clk_audio),
         .locked(locked)
     );
+
+	always_ff @(posedge clk_pixel_x10) begin
+			clk_pixel_x5 <= ~clk_pixel_x5;
+	end
 
     localparam AUDIO_BIT_WIDTH = 16;
     localparam AUDIO_RATE = 48000;
@@ -71,6 +76,7 @@ module top (
       .AUDIO_RATE(AUDIO_RATE),
       .AUDIO_BIT_WIDTH(AUDIO_BIT_WIDTH))
     hdmi(
+      .clk_pixel_x10(clk_pixel_x10),
       .clk_pixel_x5(clk_pixel_x5),
       .clk_pixel(clk_pixel),
       .clk_audio(clk_audio),

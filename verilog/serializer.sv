@@ -3,6 +3,7 @@ module serializer #(
     parameter real VIDEO_RATE = 5
 )(
     input logic clk_pixel,
+    input logic clk_pixel_x10,
     input logic clk_pixel_x5,
     input logic reset,
     input logic [9:0] tmds_internal [NUM_CHANNELS-1:0],
@@ -59,7 +60,7 @@ logic [NUM_CHANNELS-1:0] tmds_shift_negedge_temp;
 generate
 	for (i = 0; i < NUM_CHANNELS; i++)
 	begin: tmds_driving
-		always_ff @(posedge clk_pixel_x5) begin
+		always_ff @(posedge clk_pixel_x10) begin
 			if (clk_pixel_x5) begin
 				tmds[i] <= tmds_shift[i][0];
 				tmds_shift_negedge_temp[i] <= tmds_shift[i][1];
@@ -81,7 +82,7 @@ generate
 	end // for i
 endgenerate
 logic tmds_clock_negedge_temp;
-always_ff @(posedge clk_pixel_x5) begin
+always_ff @(posedge clk_pixel_x10) begin
 	if (clk_pixel_x5) begin
 		tmds_clock <= tmds_shift_clk_pixel[0];
 		tmds_clock_negedge_temp <= {0, 0, tmds_shift_clk_pixel[1]}; //? zero extend

@@ -62,6 +62,7 @@ module hdmi
     parameter int START_X = 0,
     parameter int START_Y = 0
 ) (
+    input logic clk_pixel_x10,
     input logic clk_pixel_x5,
     input logic clk_pixel,
     input logic clk_audio,
@@ -393,6 +394,7 @@ serializer #(
   .VIDEO_RATE(VIDEO_RATE)
 ) serializer(
   .clk_pixel(clk_pixel),
+  .clk_pixel_x10(clk_pixel_x10),
   .clk_pixel_x5(clk_pixel_x5),
   .reset(reset),
   .tmds_internal(tmds_internal),
