@@ -22,7 +22,10 @@ dfu: ${PROJ}.dfu
 	cp $< $@
 	dfu-suffix -v 1209 -p 5af0 -a $@
 
-.PHONY:  clean
+.PHONY: sim clean
+
+sim:
+	iverilog -g2012 -s top -I verilog -o $(PROJ).idunno $(SRCS)
 
 clean:
 	rm -rf *.vcd a.out *.svf *.bit *.config *.json *.dfu 
