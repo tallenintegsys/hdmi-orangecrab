@@ -10,6 +10,7 @@ module serializer #(
     output logic [2:0] tmds,
     output logic tmds_clock
 );
+
 logic [9:0] tmds_reversed [NUM_CHANNELS-1:0];
 genvar i, j;
 generate
@@ -21,25 +22,35 @@ generate
 		end // for j
 	end // for i
 endgenerate
-logic [9:0] tmds_shift [NUM_CHANNELS-1:0] = {10'd0, 10'd0, 10'd0};
+
 
 logic tmds_control = 1'd0;
-always_ff @(posedge clk_pixel) begin
+always_ff @(posedge clk_pixel)
+begin
 	tmds_control <= !tmds_control;
 end
+
 logic [3:0] tmds_control_synchronizer_chain = 4'd0;
-always_ff @(posedge clk_pixel_x5) begin
+always_ff @(posedge clk_pixel_x5)
+begin
 	tmds_control_synchronizer_chain <= {tmds_control, tmds_control_synchronizer_chain[3:1]};
 end
+
 logic load;
 assign load = tmds_control_synchronizer_chain[1] ^ tmds_control_synchronizer_chain[0];
 logic [9:0] tmds_mux [NUM_CHANNELS-1:0];
-
-always_comb begin
-	if (load)
-		tmds_mux = tmds_internal;
-	else
-		tmds_mux = tmds_shift;
+logic [9:0] tmds_shift [NUM_CHANNELS-1:0];
+always_comb
+begin
+	if (load) begin
+		tmds_mux[0] = tmds_internal[0];
+		tmds_mux[1] = tmds_internal[1];
+		tmds_mux[2] = tmds_internal[2];
+    end else begin
+		tmds_mux[0] = tmds_shift[0];
+		tmds_mux[1] = tmds_shift[1];
+		tmds_mux[2] = tmds_shift[2];
+	end
 end
 // See Section 5.4.1
 generate
@@ -85,7 +96,7 @@ logic tmds_clock_negedge_temp;
 always_ff @(posedge clk_pixel_x10) begin
 	if (clk_pixel_x5) begin
 		tmds_clock <= tmds_shift_clk_pixel[0];
-		tmds_clock_negedge_temp <= {0, 0, tmds_shift_clk_pixel[1]}; //? zero extend
+		tmds_clock_negedge_temp <= tmds_shift_clk_pixel[1]; //? zero extend
 	end else begin
 		tmds_clock <= tmds_shift_negedge_temp[0];
 	end

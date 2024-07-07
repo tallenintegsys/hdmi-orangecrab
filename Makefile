@@ -27,7 +27,7 @@ dfu: ${PROJ}.dfu
 .PHONY: sim clean
 
 sim:
-	iverilog -g2012 -s top -I verilog -o $(PROJ).idunno $(SRCS)
+	iverilog -g2012 -I verilog -o serializer verilog/serializer_tb.sv
 
 clean:
 	rm -rf *.vcd a.out *.svf *.bit *.config *.json *.dfu 

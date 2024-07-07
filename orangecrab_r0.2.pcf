@@ -14,7 +14,7 @@ IOBUF PORT      "gpio_6"        PULLMODE=DOWN;
 IOBUF PORT      "gpio_6"        SLEWRATE=FAST;
 LOCATE COMP     "gpio_11"       SITE "A8";
 IOBUF PORT      "gpio_11"       IO_TYPE=LVCMOS33;
-//IOBUF PORT      "gpio_11"       PULLMODE=DOWN;
+IOBUF PORT      "gpio_11"       PULLMODE=DOWN;
 IOBUF PORT      "gpio_11"       SLEWRATE=FAST;
 LOCATE COMP     "gpio_9"        SITE "C8";
 IOBUF PORT      "gpio_9"        IO_TYPE=LVCMOS33;

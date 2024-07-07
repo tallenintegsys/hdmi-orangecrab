@@ -4,3 +4,6 @@ hdmi-orangecrab.bit
 *.swp
 *.config
 *.dfu
+serializer
+*.vcd
+
